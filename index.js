@@ -18,27 +18,39 @@ async function run() {
     try {
         await client.connect();
         const database = client.db('TripBuddy');
-        
+
         const serviceCollection = database.collection('services');
         const orderCollection = database.collection('orders');
 
-        // GET API => Service.js
+        // GET API => Service.js (load all services)
         app.get('/services', async (req, res) => {
             const allServices = serviceCollection.find({});
             const services = await allServices.toArray();
             res.send(services);
         })
-         // GET API => All Orders
+        // GET API => All Orders (load all orders)
         app.get('/orders', async (req, res) => {
             const allOrders = orderCollection.find({});
             const orders = await allOrders.toArray();
             res.send(orders);
         })
 
-        // POST API => PlaceOrder.js
+        // POST API => PlaceOrder.js (place order)
         app.post('/orders', async (req, res) => {
             const newOrder = req.body;
             const result = await orderCollection.insertOne(newOrder);
+
+            const myOrder = req.query;
+            console.log(myOrder);
+
+            res.json(result);
+        })
+
+        // DELETE API => ProcessOrder.js (Delete Button)
+        app.delete('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await orderCollection.deleteOne(query);
             res.json(result);
         })
     }

@@ -53,6 +53,15 @@ async function run() {
             const result = await orderCollection.deleteOne(query);
             res.json(result);
         })
+
+        // POST API => AddService.js
+        app.post('/services', async (req, res) => {
+            const newService = req.body;
+            const result = await serviceCollection.insertOne(newService);
+            const addService = req.query;
+            console.log(addService);
+            res.json(result);
+        })
     }
     finally {
         // await client.close();

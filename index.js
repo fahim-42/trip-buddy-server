@@ -32,10 +32,21 @@ async function run() {
         app.get('/orders', async (req, res) => {
             const allOrders = orderCollection.find({});
             const orders = await allOrders.toArray();
-            res.send(orders);
+
+            // MyOrders.js => query
+            const myOrder = req.query.name;
+
+            const queryMyOrder = { name: myOrder };
+            const myOrderInfo = await orderCollection.find(queryMyOrder).toArray();
+
+            console.log(myOrderInfo);
+            res.send({
+                orders,
+                myOrderInfo
+            });
         })
 
-        // POST API => PlaceOrder.js (place order)
+        // POST API => PlaceOrder.js (Booking)
         app.post('/orders', async (req, res) => {
             const newOrder = req.body;
             const result = await orderCollection.insertOne(newOrder);
